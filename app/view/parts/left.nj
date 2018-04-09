@@ -1,0 +1,16 @@
+<div class="layui-side layui-bg-black kit-side">
+    <div class="layui-side-scroll">
+        <div class="kit-side-fold"><i class="fa fa-navicon" aria-hidden="true"></i></div>
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="kitNavbar" kit-navbar v-for="item in navMenus">
+            <li class="layui-nav-item">
+                <a class="" href="javascript:;"><i :class="item.icon" aria-hidden="true" style="margin-right:5px;"></i><span><{item.title}></span></a>
+                <dl class="layui-nav-child" v-for="subItem in item.children">
+                    <dd>
+                        <a href="javascript:;" :data-url="subItem.src" :data-title="subItem.title" kit-target :data-id='subItem.id'><i :class="subItem.icon" aria-hidden="true" style="margin-right:5px;"></i><span><{subItem.title}></span></a>
+                    </dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+</div>

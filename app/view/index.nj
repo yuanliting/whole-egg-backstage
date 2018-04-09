@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="../public/layui-src/src/css/layui.css" media="all" />
+    <link rel="stylesheet" href="../public/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="../public/css/app.css" media="all" />
+    <link rel="stylesheet" href="../public/css/themes/default.css" media="all" id="skin" kit-skin />
+    {% block styles %}{% endblock %}
+</head>
+
+<body class="kit-theme">
+    <div id="vueApp" v-cloak>
+        <div class="layui-layout layui-layout-admin kit-layout-admin">
+                {% include "./parts/header.nj" %}
+                {% include "./parts/left.nj" %}
+                {% include "./parts/main.nj" %}
+                {% include "./parts/footer.nj" %}
+        </div>
+    </div>
+    <script src="../public/layui-src/src/layui.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="../public/js/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- 引入页面左侧导航js -->
+    <script>
+        var vueApp;
+        var message;
+        layui.config({
+            base: '../public/js/',
+            version: '1.0.1'
+        }).use(['app', 'message'], function() {
+            var app = layui.app,
+                $ = layui.jquery,
+                layer = layui.layer;
+            //将message设置为全局以便子页面调用
+            message = layui.message;
+            //主入口
+            app.set({
+                type: 'iframe'
+            }).init();
+            $('dl.skin > dd').on('click', function() {
+                var $that = $(this);
+                var skin = $that.children('a').data('skin');
+                switchSkin(skin);
+            });
+            var setSkin = function(value) {
+                layui.data('kit_skin', {
+                    key: 'skin',
+                    value: value
+                });
+            },
+            getSkinName = function() {
+                return layui.data('kit_skin').skin;
+            },
+            switchSkin = function(value) {
+                var _target = $('link[kit-skin]')[0];
+                _target.href = _target.href.substring(0, _target.href.lastIndexOf('/') + 1) + value + _target.href.substring(_target.href.lastIndexOf('.'));
+                setSkin(value);
+            },
+            initSkin = function() {
+                var skin = getSkinName();
+                switchSkin(skin === undefined ? 'default' : skin);
+            }();
+        });
+
+        axios.get('/admin/navMenu')
+            .then(function (response) {
+                var json = response.data;
+                if(!(json.code == 200)){
+                    alert('error');
+                    return;
+                }
+                // 创建 vue 实例
+                vueApp = new Vue({
+                    el: '#vueApp',
+                    delimiters: ['<{', '}>'],
+                    data: {
+                        navMenus: json.data.menus,
+                        aa: 'aa'
+                    },
+                    mounted: function(){
+                    },
+                    methods: {
+                    }
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    </script>
+</body>
+
+</html>

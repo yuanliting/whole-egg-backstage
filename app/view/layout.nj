@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="../../public/layui-src/src/css/layui.css" media="all" />
+    <link rel="stylesheet" href="../../public/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="../../public/css/app.css" media="all" />
+    <link rel="stylesheet" href="../../public/css/themes/default.css" media="all" id="skin" kit-skin />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    {% block cssScripts %}{% endblock %}
+    {% block styles %}{% endblock %}
+</head>
+
+<body class="kit-theme">
+    {% block content %}{% endblock %}
+    <script src="../../public/layui-src/src/layui.js"></script>
+    <script src="../../public/js/jquery-1.9.0.min.js"></script>
+    <script src="../../public/js/util.js"></script>
+    <script src="../../public/js/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

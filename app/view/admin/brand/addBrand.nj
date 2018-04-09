@@ -1,0 +1,419 @@
+{% extends '../../layout.nj' %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block styles %}
+    <style>
+        .top{
+            margin:20px;
+            padding:20px;
+            height:50px;
+            box-sizing:border-box;
+            background:#f2f2f2;
+            border-left:4px solid #009688;
+        }
+        .formData{
+            box-sizing:border-box;
+            padding:20px;
+            width:800px;
+        }
+         .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+         .upload{
+            {# padding: 4px 10px;
+            height: 20px;#}
+            line-height: 50px; 
+            margin-top:10px;
+            position: relative;
+            border: 1px solid #999;
+            text-decoration: none; 
+            display: inline-block;
+            line-height: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            background: #fff;
+            border: 1px solid #dcdfe6;
+            text-align: center;
+            box-sizing: border-box;
+            outline: 0;
+            transition: .1s;
+            font-weight: 500;
+            padding: 12px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #409EFF;
+            border-color: #409EFF;
+        }
+        .upload:hover{
+            color:#fff;
+        }
+        .change{
+            position: absolute;
+            overflow: hidden;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div id="vueApp" v-cloak>
+        <div class="top">
+            <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item>品牌</el-breadcrumb-item>
+                <el-breadcrumb-item>添加品牌</el-breadcrumb-item>
+            </el-breadcrumb>
+        </div>
+        <div class="formData">
+            <el-form ref="form" :model="form"  :rules="rules" label-width="140px">
+                <el-form-item label="品牌code" prop="code">
+                    <el-input v-model="form.code"></el-input>
+                </el-form-item>
+
+                <el-form-item label="品牌名字" prop="brandName">
+                    <el-input v-model="form.brandName"></el-input>
+                </el-form-item>
+
+                <el-form-item label="品牌类型" prop="brandType" required>
+                    <el-select v-model="form.brandType" placeholder="请选择品牌类型">
+                        <el-option label="美妆" value="beautyMakeup"></el-option>
+                        <el-option label="女装" value="femaleWear"></el-option>
+                        <el-option label="男装" value="maleWear"></el-option>
+                        <el-option label="护肤品" value="skinProduct"></el-option>
+                        <el-option label="家电" value="homeAppliances"></el-option>
+                        <el-option label="手机" value="phone"></el-option>
+                        <el-option label="电脑" value="computer"></el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="介绍" prop="describe">
+                    <el-input v-model="form.describe"></el-input>
+                </el-form-item>
+
+                <el-form-item label="活动" prop="brandAction">
+                    <el-input v-model="form.brandAction"></el-input>
+                </el-form-item>
+
+                <el-form-item label="优惠券" prop="discount">
+                    <el-input v-model="form.discount" type="number"></el-input>
+                </el-form-item>
+
+                 <el-form-item label="打折" prop="brandDiscount">
+                    <el-input v-model="form.brandDiscount" type="number"></el-input>
+                </el-form-item>
+                
+                <el-form-item label="品牌头图"  prop="brandImg" required>
+                    <el-upload
+                    class="avatar-uploader"
+                    action="/admin/brand/img/upload"
+                    accept="image/*"
+                    :multiple = "false"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccessOne"
+                    :before-upload="beforeAvatarUpload">
+                        <img v-if="form.brandImg" :src="form.brandImg" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+
+                <el-form-item label="品牌详情页面头图"  prop="brandDetailBigImg" required>
+                    <el-upload
+                    class="avatar-uploader"
+                    action="/admin/brand/img/upload"
+                    accept="image/*"
+                    :multiple = "false"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccessTwo"
+                    :before-upload="beforeAvatarUpload">
+                        <img v-if="form.brandDetailBigImg" :src="form.brandDetailBigImg" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+
+                 <el-form-item label="详情页面的小图片"  prop="brandDetailSmallImg" required>
+                    <el-upload
+                    class="avatar-uploader"
+                    action="/admin/brand/img/upload"
+                    accept="image/*"
+                    :multiple = "false"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccessThree"
+                    :before-upload="beforeAvatarUpload">
+                        <img v-if="form.brandDetailSmallImg" :src="form.brandDetailSmallImg" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+
+               
+                
+                 <el-form-item label="选择上传的图片" required>
+                    <a href="javascript:;" class="upload">选择上传的图片
+                        <input name="file" class="change"  id="doc" onchange="javascript:setImagePreviews();" type="file" multiple/>
+                    </a>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('form')">确认提交</el-button>
+                    <el-button @click="resetForm('form')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+
+         <div id="dd" style=" width:990px;"></div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script>
+        let fileList = [];
+        function setImagePreviews(avalue) {
+            var docObj = document.getElementById("doc");
+            var dd = document.getElementById("dd");
+                dd.innerHTML = "";
+                fileList = docObj.files;
+            for (var i = 0; i < fileList.length; i++) {            
+                dd.innerHTML += "<div style='float:left' > <img id='img" + i + "'  /> </div>";
+                var imgObjPreview = document.getElementById("img"+i); 
+                if (docObj.files && docObj.files[i]) {
+                    //火狐下，直接设img属性
+                    imgObjPreview.style.display = 'block';
+                    imgObjPreview.style.width = '150px';
+                    imgObjPreview.style.height = '180px';
+                    //imgObjPreview.src = docObj.files[0].getAsDataURL();
+                    //火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式
+                    imgObjPreview.src = window.URL.createObjectURL(docObj.files[i]);
+                }
+                else {
+                    //IE下，使用滤镜
+                    docObj.select();
+                    var imgSrc = document.selection.createRange().text;
+                    alert(imgSrc)
+                    var localImagId = document.getElementById("img" + i);
+                    //必须设置初始大小
+                    localImagId.style.width = "150px";
+                    localImagId.style.height = "180px";
+                    //图片异常的捕捉，防止用户修改后缀来伪造图片
+                    try {
+                        localImagId.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+                        localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = imgSrc;
+                    }
+                    catch (e) {
+                        alert("您上传的图片格式不正确，请重新选择!");
+                        return false;
+                    }
+                    imgObjPreview.style.display = 'none';
+                    document.selection.empty();
+                }
+            }  
+
+            return true;
+        }
+
+    let excelFileName = '';
+    let src = '';
+    function setExcelPreviews(avalue){
+        var excelFiles = document.getElementById("excel"); 
+        excelFileName = excelFiles.files[0].name;
+        var ex = document.getElementById("ex");
+        ex.innerHTML = '表格的名称：' + excelFileName;
+         var file = excelFiles.files[0];
+        if (window.FileReader) {    
+            var reader = new FileReader();    
+            reader.readAsDataURL(file);    
+            //监听文件读取结束后事件    
+            reader.onloadend = function (e) {
+                src =  parseURL(e.target.result);
+            };    
+            } 
+        }
+
+        var vueApp;
+        var validateType = (rule, value, callback) => {
+            var re = /^[A-Za-z]+$/gi;
+            if(!re.test(value)) {
+                callback(new Error('请选择品牌类型！'));
+            } else {
+                callback();
+            }
+        };
+        var validateBrandImg = (rule, value, callback) => {
+            if (!value) {
+            callback(new Error('请添加品牌的头图！'));
+            } else {
+            callback();
+            }
+        };
+        var validateBrandDetailBigImg = (rule, value, callback) => {
+            if (!value) {
+            callback(new Error('请添加品牌详情页面头图！'));
+            } else {
+            callback();
+            }
+        };
+        var validateBrandDetailSmallImg = (rule, value, callback) => {
+            if (!value) {
+            callback(new Error('请添加品牌详情页面的小图片！'));
+            } else {
+            callback();
+            }
+        };
+        vueApp = new Vue({
+            el: '#vueApp',
+            delimiters: ['<{', '}>'], // 修改VUE的修饰符，防止和后端模板引擎冲突
+            data: {
+                form: {
+                    //唯一标示
+                    code:'',
+                    //类型
+                    brandType: '',
+                    //名字
+                    brandName:'',
+                    //介绍
+                    describe: '',
+                    //活动
+                    brandAction:'',
+                    //优惠券
+                    discount:'',
+                    //打折
+                    brandDiscount:'',
+                    //品牌头图
+                    brandImg:'',
+                    //品牌详情页面头图
+                    brandDetailBigImg:'',
+                    //详情页面的小图片
+                    brandDetailSmallImg:'',
+                    //品牌详情页面品牌图片数组
+                    brandDetailImgArray:[]
+                },
+                rules: {
+                    code:[
+                         { required: true, message: '请输入品牌code！', trigger: 'blur' }
+                    ],
+                    brandName:[
+                         { required: true, message: '请输入品牌名字！', trigger: 'blur' }
+                    ],
+                    brandType: [
+                        { validator: validateType, trigger: 'blur' }
+                    ],
+                    describe: [
+                        { required: true, message: '请输入品牌介绍！', trigger: 'blur' }
+                    ],
+                    brandAction: [
+                        { required: true, message: '请输入品牌活动！', trigger: 'blur' }
+                    ],
+                    discount: [
+                        { required: true, message: '请输入品牌优惠券！', trigger: 'blur' }
+                    ],
+                    brandDiscount: [
+                        { required: true, message: '请输入品牌打折！', trigger: 'blur' }
+                    ],
+                    brandImg: [
+                        { validator: validateBrandImg, trigger: 'blur' }
+                    ],
+                    brandDetailBigImg: [
+                        { validator: validateBrandDetailBigImg, trigger: 'blur' }
+                    ],
+                    brandDetailSmallImg: [
+                        { validator: validateBrandDetailSmallImg, trigger: 'blur' }
+                    ],
+                }
+            },
+            mounted: function() {
+            },
+            methods: {
+                submitForm: function(formName) {
+                    let _that = this;
+                   let formData = new FormData();
+                   let param = _that.form;
+                   let imgFiles = false;
+                   if(fileList.length > 0){
+                       imgFiles = true;
+                   }
+                    for (var i = 0; i < fileList.length; i++) {
+                        formData.append('file', fileList[i]);
+                    }
+                    formData.append('types[]', 'main');
+                    const url = '/admin/brand/addBrand'
+                    const config = {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        params:{
+                            formData:param,
+                            img:imgFiles
+                        }
+                        }
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            axios.post(url,formData, config).then((response) => {
+                                var json = response.data; 
+                                console.log(response);   
+                                if(json.code == 200){
+                                    _that.$message({
+                                        message: '添加成功！',
+                                        type: 'success'
+                                    });
+                                    setTimeout(function(){
+                                        location.reload();
+                                    },2000)
+                                }else{
+                                    _that.$message.error(json.msg);
+                                    return;
+                                }
+                            }).catch((err) => {
+                                console.log(err);
+                            })
+                        } else {
+                                console.log('error submit!!');
+                                return false;
+                        }
+                    })
+                },
+                resetForm: function(formName) {
+                    this.$refs[formName].resetFields();
+                },
+                handleAvatarSuccessOne: function(res, file) {
+                    this.form.brandImg = res.url;
+                },
+                handleAvatarSuccessTwo: function(res, file) {
+                    this.form.brandDetailBigImg = res.url;
+                },
+                handleAvatarSuccessThree: function(res, file) {
+                    this.form.brandDetailSmallImg = res.url;
+                },
+                beforeAvatarUpload: function(file) {
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+                    if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    }
+                    return isLt2M;
+                },
+               
+            }
+        });
+    </script>
+{% endblock %}
